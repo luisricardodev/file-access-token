@@ -3,4 +3,4 @@ samples/
 .env
 logs/*.log
 npm-debug.log*
-data/tokens.json
+tokens.json

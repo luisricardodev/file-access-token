@@ -1,0 +1,16 @@
+[
+  {
+    "token": "cliente-a-demo",
+    "clientName": "Cliente A",
+    "allowedPath": "cliente_a",
+    "expiresAt": "2026-12-31T23:59:59Z",
+    "readOnly": true
+  },
+  {
+    "token": "cliente-b-demo",
+    "clientName": "Cliente B",
+    "allowedPath": "cliente_b",
+    "expiresAt": null,
+    "readOnly": true
+  }
+]

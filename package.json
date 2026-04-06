@@ -1,0 +1,21 @@
+{
+  "name": "cliente-file-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal seguro para disponibilizar pastas e arquivos de clientes por token.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

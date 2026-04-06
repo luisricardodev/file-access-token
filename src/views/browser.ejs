@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <script defer src="/static/scripts/main.js"></script>
+  </head>
+  <body>
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <main class="shell">
+      <section class="hero-panel hero-panel-browser">
+        <div class="hero-copy">
+          <p class="eyebrow">Acesso protegido por token</p>
+          <h1><%= clientName %></h1>
+          <p class="lead">
+            Navegue apenas na pasta liberada para este cliente e baixe arquivos em modo somente leitura.
+          </p>
+
+          <div class="badge-row">
+            <span class="badge">Somente leitura</span>
+            <span class="badge">Protecao contra path traversal</span>
+            <% if (currentZipHref) { %>
+              <span class="badge">ZIP disponivel</span>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="summary-panel">
+          <div class="summary-item">
+            <span>Pasta atual</span>
+            <strong><%= currentRelativePath || "Raiz liberada" %></strong>
+          </div>
+          <div class="summary-item">
+            <span>Pastas</span>
+            <strong><%= directories.length %></strong>
+          </div>
+          <div class="summary-item">
+            <span>Arquivos</span>
+            <strong><%= files.length %></strong>
+          </div>
+          <div class="summary-item">
+            <span>Permissao</span>
+            <strong><%= readOnly ? "Leitura" : "Customizada" %></strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="surface-card">
+        <div class="toolbar">
+          <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <% breadcrumbs.forEach(function (breadcrumb) { %>
+              <a href="<%= breadcrumb.href %>"><%= breadcrumb.label %></a>
+            <% }) %>
+          </nav>
+
+          <div class="toolbar-actions">
+            <% if (parentHref) { %>
+              <a class="button" href="<%= parentHref %>">Voltar</a>
+            <% } %>
+            <% if (currentZipHref) { %>
+              <a class="button" href="<%= currentZipHref %>">Baixar pasta ZIP</a>
+            <% } %>
+            <button class="button button-primary" type="button" data-copy-link>Copiar link</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <article class="surface-card">
+          <div class="section-head">
+            <h2>Pastas</h2>
+            <span class="pill"><%= directories.length %></span>
+          </div>
+
+          <% if (!directories.length) { %>
+            <p class="empty-state">Nenhuma subpasta visivel neste nivel.</p>
+          <% } else { %>
+            <ul class="resource-list">
+              <% directories.forEach(function (directory) { %>
+                <li class="resource-row">
+                  <div class="resource-main">
+                    <span class="resource-icon resource-icon-folder" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h3.07c.73 0 1.42.3 1.93.84l1.1 1.16h6.4A2.75 2.75 0 0 1 21 8.75v8.5A2.75 2.75 0 0 1 18.25 20h-12.5A2.75 2.75 0 0 1 3 17.25z"></path>
+                      </svg>
+                    </span>
+                    <div>
+                      <strong><%= directory.name %></strong>
+                      <span>Tamanho: <%= directory.sizeLabel %></span>
+                    </div>
+                  </div>
+
+                  <div class="resource-actions">
+                    <a class="button" href="<%= directory.href %>">Abrir</a>
+                    <% if (directory.zipHref) { %>
+                      <a class="button" href="<%= directory.zipHref %>">ZIP</a>
+                    <% } %>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </article>
+
+        <article class="surface-card">
+          <div class="section-head">
+            <h2>Arquivos</h2>
+            <span class="pill"><%= files.length %></span>
+          </div>
+
+          <% if (!files.length) { %>
+            <p class="empty-state">Nenhum arquivo visivel nesta pasta.</p>
+          <% } else { %>
+            <ul class="resource-list">
+              <% files.forEach(function (fileEntry) { %>
+                <li class="resource-row <%= fileEntry.previewType ? 'resource-row-preview' : '' %>">
+                  <div class="resource-main">
+                    <% if (fileEntry.previewType) { %>
+                      <div class="resource-preview">
+                        <% if (fileEntry.previewType === "image") { %>
+                          <img src="<%= fileEntry.previewHref %>" alt="Previa de <%= fileEntry.name %>" loading="lazy">
+                          <span class="resource-preview-badge">Imagem</span>
+                        <% } else { %>
+                          <video
+                            src="<%= fileEntry.previewHref %>"
+                            preload="metadata"
+                            muted
+                            controls
+                            playsinline
+                            aria-label="Previa do video <%= fileEntry.name %>"
+                          ></video>
+                          <span class="resource-preview-badge">Video</span>
+                        <% } %>
+                      </div>
+                    <% } else { %>
+                      <span class="resource-icon resource-icon-file resource-icon-file-<%= fileEntry.fileVisual.category %>" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false">
+                          <path d="M7.5 3A2.5 2.5 0 0 0 5 5.5v13A2.5 2.5 0 0 0 7.5 21h9A2.5 2.5 0 0 0 19 18.5V9.56a2.5 2.5 0 0 0-.73-1.77l-3.06-3.06A2.5 2.5 0 0 0 13.44 4z"></path>
+                          <path d="M13 4.25V8.5A1.5 1.5 0 0 0 14.5 10H18"></path>
+                        </svg>
+                        <span class="resource-icon-badge"><%= fileEntry.fileVisual.badge %></span>
+                      </span>
+                    <% } %>
+                    <div class="resource-meta">
+                      <strong><%= fileEntry.name %></strong>
+                      <span>
+                        <%= fileEntry.sizeLabel %> . <%= fileEntry.modifiedLabel %>
+                        <% if (fileEntry.previewType) { %>
+                          . Previa disponivel
+                        <% } %>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="resource-actions">
+                    <% if (fileEntry.previewHref) { %>
+                      <a class="button" href="<%= fileEntry.previewHref %>" target="_blank" rel="noopener noreferrer">Ver previa</a>
+                    <% } %>
+                    <a class="button button-primary" href="<%= fileEntry.downloadHref %>">Download</a>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

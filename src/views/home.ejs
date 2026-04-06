@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <script defer src="/static/scripts/main.js"></script>
+  </head>
+  <body>
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <main class="shell shell-home">
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Portal seguro para arquivos</p>
+          <h1><%= appName %></h1>
+          <p class="lead">
+            Abra um link com token para navegar somente pela pasta liberada ao cliente,
+            sem upload, edicao ou exclusao de arquivos.
+          </p>
+
+          <div class="badge-row">
+            <span class="badge">Token validado no backend</span>
+            <span class="badge">Pastas isoladas por cliente</span>
+            <span class="badge">Download individual ou ZIP</span>
+          </div>
+        </div>
+
+        <div class="access-card">
+          <h2>Abrir acesso</h2>
+          <p>
+            Cole o token recebido ou abra diretamente um link no formato
+            <code>/acesso/seu-token</code>.
+          </p>
+
+          <form class="access-form" action="/" method="get">
+            <label for="token">Token</label>
+            <input
+              id="token"
+              name="token"
+              type="text"
+              placeholder="cliente-a-demo"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button class="button button-primary" type="submit">Entrar no portal</button>
+          </form>
+
+          <p class="muted small">
+            Tambem funciona por URL curta: <code>/?token=seu-token</code>
+          </p>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <article class="surface-card">
+          <h2>Como funciona</h2>
+          <ul class="plain-list">
+            <li>Cada token aponta para uma pasta especifica dentro do STORAGE_ROOT.</li>
+            <li>A navegacao usa validacao de caminho no backend para impedir saida da area autorizada.</li>
+            <li>Os downloads sao somente leitura e os acessos ficam registrados em log.</li>
+          </ul>
+        </article>
+
+        <article class="surface-card">
+          <h2>Boas praticas</h2>
+          <ul class="plain-list">
+            <li>Envie aos clientes apenas o link completo com token.</li>
+            <li>Use expiracao quando o acesso tiver prazo definido.</li>
+            <li>Mantenha o arquivo <code>data/tokens.json</code> sob controle administrativo.</li>
+          </ul>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

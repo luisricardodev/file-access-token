@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+  </head>
+  <body>
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <main class="shell shell-error">
+      <section class="error-card">
+        <p class="eyebrow">Falha de acesso</p>
+        <h1><%= statusCode %></h1>
+        <p class="lead"><%= message %></p>
+        <p class="muted">
+          Verifique o token, a validade do acesso ou o caminho solicitado e tente novamente.
+        </p>
+        <div class="toolbar-actions">
+          <a class="button button-primary" href="<%= backHref %>">Voltar</a>
+          <a class="button" href="/">Ir para a tela inicial</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
